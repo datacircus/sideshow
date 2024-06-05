@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package sideshow.coffeeco.v1;
+
+import "buf/validate/validate.proto";
+import "sideshow/coffeeco/v1/coffee.proto";
+
+option go_package = "sideshow/coffeeco/v1";
+
+message Product {
+  oneof product_type {
+    option (buf.validate.oneof).required = true;
+    // While we grow, there is only coffee. We swear it is worth the price...
+    sideshow.coffeeco.v1.CoffeeProduct coffee = 1;
+  }
+
+  // reserve for additional growth in the product offering
+  reserved 2 to 10;
+}
+
+message CoffeeProduct {
+  enum Size {
+    SIZE_UNSPECIFIED = 0;
+    SIZE_SMALL = 1;
+    SIZE_MEDIUM = 2;
+    SIZE_LARGE = 3;
+    SIZE_XLARGE = 4;
+  }
+  enum Style {
+    STYLE_UNSPECIFIED = 0;
+    STYLE_EXPRESSO = 1;
+    STYLE_DOPPIO = 2;
+    STYLE_LUNGO = 3;
+    STYLE_RISTRETTO = 4;
+    STYLE_MACCHIATO = 5;
+    STYLE_CORRETTO = 6;
+    STYLE_CON_PANNA = 7;
+    STYLE_ROMANO = 8;
+    STYLE_CAPPUCCINO = 9;
+    STYLE_AMERICANO = 10;
+    STYLE_CAFE_LATTE = 11;
+    STYLE_FLAT_WHITE = 12;
+    STYLE_MAROCCHINO = 13;
+    STYLE_MOCHA = 14;
+    STYLE_BICERIN = 15;
+    STYLE_BREVE = 16;
+    STYLE_RAF_COFFEE = 17;
+    STYLE_MEAD_RAF = 18;
+    STYLE_VIENNA_COFFEE = 19;
+    STYLE_CHOCOLATE_MILK = 20;
+    STYLE_COCOA = 21;
+    STYLE_LATTE_MACCHIATO = 22;
+    STYLE_GLACE = 23;
+    STYLE_FREDDO = 24;
+    STYLE_IRISH_COFFEE = 25;
+    STYLE_FRAPPE = 26;
+    STYLE_CAPPUCCINO_FREDDO = 27;
+    STYLE_CARAMEL_FRAPPE = 28;
+    STYLE_EXPRESSO_LACCINO = 29;
+    STYLE_CAFFE_AFFOGATO = 30;
+    STYLE_POUR_OVER = 31;
+    STYLE_LATTE = 32;
+  }
+
+  // We need to track the "type" of Coffee being sold
+  // This helps us to see which Vendor has the best product
+  sideshow.coffeeco.v1.Coffee coffee = 1 [(buf.validate.field).required = true];
+  // In order to sell a product, we need to understand the size that is required
+  // If most people order a specific type of coffee at a specific size, then
+  // We can forecast our future demands and ensure our product doesn't sit on the
+  // Shelf too long. Coffee has a shelf life (for best flavor, scent) of about 1 month
+  sideshow.coffeeco.v1.CoffeeProduct.Size size = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum = {
+      not_in: [0]
+    }
+  ];
+  // Each Coffee can be produced with a specific Style
+  // This is like the traditional SKU from retail
+  sideshow.coffeeco.v1.CoffeeProduct.Style style = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum = {
+      not_in: [0]
+    }
+  ];
+  // typically each Product would have a Unit Cost. Let's suspend disbelief for the sake of the presentation
+}

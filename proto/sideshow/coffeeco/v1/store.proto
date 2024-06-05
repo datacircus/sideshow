@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package sideshow.coffeeco.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "sideshow/coffeeco/v1";
+
+message Store {
+  enum LocationStatus {
+    LOCATION_STATUS_UNSPECIFIED = 0;
+    LOCATION_STATUS_UNDER_CONSTRUCTION = 1;
+    LOCATION_STATUS_OPEN_TO_PUBLIC = 2;
+    LOCATION_STATUS_CLOSED_FOR_UPGRADES = 3;
+    LOCATION_STATUS_CLOSED_PERMANENTLY = 4;
+  }
+
+  // Each location has an identifier
+  string store_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {uuid: true}
+  ];
+
+  google.protobuf.Timestamp created = 2 [(buf.validate.field).cel = {
+    id: "not_from_the_future",
+    message: "A location has to be created before it can be build or go online",
+    // Ensure that the server's local time (utc) is used as a gating mechanism for sane timestamps
+    expression: "this <= now"
+  }];
+
+  google.protobuf.Timestamp opened_on = 3 [(buf.validate.field).cel = {
+    id: "not_from_the_future",
+    message: "A location can be created before it is opened",
+    // Ensure that the server's local time (utc) is used as a gating mechanism for sane timestamps
+    expression: "this <= now"
+  }];
+
+  google.protobuf.Timestamp closed_permanently_on = 4 [(buf.validate.field).cel = {
+    id: "not_from_the_future",
+    message: "A location can be created before it is opened",
+    // Ensure that the server's local time (utc) is used as a gating mechanism for sane timestamps
+    expression: "this <= now"
+  }];
+
+  // In order to understand the health of a Location, we need to understand
+  // the state of a location. We could see trends dipping and wonder, but understanding
+  // if a location is open to the public, under construction, or closed forever really help
+  // to understand what worked or didn't work with a specific location
+  sideshow.coffeeco.v1.Store.LocationStatus status = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum = {
+      not_in: [0]
+    }
+  ];
+
+  // would typically track "address"
+  // geo-location (GeoPoint)
+  // this provides links to understand demographics, foot traffic, etc
+}
