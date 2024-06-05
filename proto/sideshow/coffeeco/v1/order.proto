@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package sideshow.coffeeco.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "sideshow/coffeeco/v1/customer.proto";
+import "sideshow/coffeeco/v1/product.proto";
+import "sideshow/coffeeco/v1/store.proto";
+
+option go_package = "sideshow/coffeeco/v1";
+
+message Order {
+  // Each Order takes place at a point in Time
+  google.protobuf.Timestamp order_created = 1 [(buf.validate.field).cel = {
+    id: "not_from_the_future",
+    message: "we are not ready to offer scheduled orders. Maybe in the future",
+    // Ensure that the server's local time (utc) is used as a gating mechanism for sane timestamps
+    expression: "this <= now"
+  }];
+  // An Order can be purchased at a CoffeeCo Location, otherwise where is the coffee going to be made
+  // It is true that the Store could be online, but that makes this reference more complicated than necessary
+  sideshow.coffeeco.v1.Store purchased_at = 2 [(buf.validate.field).required = true];
+  // A Customer can Order from our Coffee Location
+  sideshow.coffeeco.v1.Customer customer = 3 [(buf.validate.field).required = true];
+  // Each Order may have one or more items. We cannot have an Order without something to Purchase
+  repeated sideshow.coffeeco.v1.Product items = 4 [(buf.validate.field).required = true];
+  // Each Order has a monetary value
+  sideshow.coffeeco.v1.Total total = 5 [(buf.validate.field).required = true];
+}
+
+message Total {
+  // Modified version of google/type/money.proto
+  enum CurrencyCode {
+    CURRENCY_CODE_UNSPECIFIED = 0;
+    CURRENCY_CODE_USD = 1;
+  }
+
+  CurrencyCode currency = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum = {
+      not_in: [0]
+    }
+  ];
+
+  uint64 units = 2;
+  uint32 nanos = 3;
+}

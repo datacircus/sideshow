@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package sideshow.coffeeco.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "sideshow/coffeeco/v1";
+
+message Customer {
+  enum CustomerType {
+    CUSTOMER_TYPE_UNSPECIFIED = 0;
+    CUSTOMER_TYPE_GUEST = 1;
+    CUSTOMER_TYPE_MEMBER = 2;
+  }
+
+  // Stores the name, could be a nickname, or real name
+  // We don't assume to capture more data than necessary
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 4,
+      max_len: 256,
+    }
+  ];
+
+  // Stores the unique identifier for a given customer
+  // Note: the `murmur3(name:uuid)` can be used to generate a strong hash if needed
+  string uuid = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {uuid: true}
+  ];
+
+  // Stores the pointer to the 'first time' we've encountered a Customer
+  google.protobuf.Timestamp first_seen = 3 [(buf.validate.field).cel = {
+    id: "not_from_the_future",
+    message: "we can't first see a customer in the future. No time travel allowed here",
+    // Ensure that the server's local time (utc) is used as a gating mechanism for sane timestamps
+    expression: "this <= now"
+  }];
+
+  // Stores the value of Guest or Member
+  CustomerType customer_type = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum = {
+      not_in: [0]
+    }
+  ];
+
+  // Stores the optional loyalty_member_id. This value can identify the
+  // customer without the need to lookup any personally identifiable information
+  // can only be associated with known Member - since collecting points requires some compute and dollar spend
+  string loyalty_member_id = 5 [(buf.validate.field).string = {uuid: true}];
+}
