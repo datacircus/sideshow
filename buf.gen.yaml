@@ -6,6 +6,8 @@ managed:
       value: github.com/datacircus/sideshow/coffeeco/gen/go
 plugins:
   - remote: buf.build/protocolbuffers/go:v1.31.0
-    out: gen/go
+    out: gen
+    opt:
+      - paths=source_relative
 inputs:
   - directory: proto
