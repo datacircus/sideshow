@@ -8,7 +8,7 @@ import "sideshow/coffeeco/v1/customer.proto";
 import "sideshow/coffeeco/v1/product.proto";
 import "sideshow/coffeeco/v1/store.proto";
 
-option go_package = "sideshow/coffeeco/v1";
+option go_package = "gen/sideshow/coffeeco/v1";
 
 message Order {
   // Each Order takes place at a point in Time

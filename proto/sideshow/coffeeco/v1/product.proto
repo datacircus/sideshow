@@ -5,7 +5,7 @@ package sideshow.coffeeco.v1;
 import "buf/validate/validate.proto";
 import "sideshow/coffeeco/v1/coffee.proto";
 
-option go_package = "sideshow/coffeeco/v1";
+option go_package = "gen/sideshow/coffeeco/v1";
 
 message Product {
   oneof product_type {
