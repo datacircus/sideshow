@@ -5,8 +5,6 @@ package sideshow.coffeeco.v1;
 import "buf/validate/validate.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "sideshow/coffeeco/v1;coffeecov1";
-
 message Store {
   enum LocationStatus {
     LOCATION_STATUS_UNSPECIFIED = 0;
