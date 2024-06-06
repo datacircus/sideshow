@@ -3,10 +3,10 @@ managed:
   enabled: true
   override:
     - file_option: go_package_prefix
-      value: github.com/datacircus/sideshow/gen
+      value: github.com/datacircus/sideshow/gen/go
 plugins:
   - remote: buf.build/protocolbuffers/go:v1.31.0
-    out: gen
+    out: gen/go
     opt:
       - paths=source_relative
 inputs:
