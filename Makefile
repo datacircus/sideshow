@@ -14,7 +14,7 @@ buf-lint:
 buf-format:
 	@buf format -w
 
-build-descriptor:
+build-descriptor: gen
 	@buf build -o gen/coffeeco.bin
 
 gen: buf-lint
