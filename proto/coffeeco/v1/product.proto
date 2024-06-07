@@ -1,15 +1,15 @@
 syntax = "proto3";
 
-package sideshow.coffeeco.v1;
+package coffeeco.v1;
 
 import "buf/validate/validate.proto";
-import "sideshow/coffeeco/v1/coffee.proto";
+import "coffeeco/v1/coffee.proto";
 
 message Product {
   oneof product_type {
     option (buf.validate.oneof).required = true;
     // While we grow, there is only coffee. We swear it is worth the price...
-    sideshow.coffeeco.v1.CoffeeProduct coffee = 1;
+    coffeeco.v1.CoffeeProduct coffee = 1;
   }
 
   // reserve for additional growth in the product offering
@@ -62,12 +62,12 @@ message CoffeeProduct {
 
   // We need to track the "type" of Coffee being sold
   // This helps us to see which Vendor has the best product
-  sideshow.coffeeco.v1.Coffee coffee = 1 [(buf.validate.field).required = true];
+  coffeeco.v1.Coffee coffee = 1 [(buf.validate.field).required = true];
   // In order to sell a product, we need to understand the size that is required
   // If most people order a specific type of coffee at a specific size, then
   // We can forecast our future demands and ensure our product doesn't sit on the
   // Shelf too long. Coffee has a shelf life (for best flavor, scent) of about 1 month
-  sideshow.coffeeco.v1.CoffeeProduct.Size size = 2 [
+  coffeeco.v1.CoffeeProduct.Size size = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).enum = {
       not_in: [0]
@@ -75,7 +75,7 @@ message CoffeeProduct {
   ];
   // Each Coffee can be produced with a specific Style
   // This is like the traditional SKU from retail
-  sideshow.coffeeco.v1.CoffeeProduct.Style style = 3 [
+  coffeeco.v1.CoffeeProduct.Style style = 3 [
     (buf.validate.field).required = true,
     (buf.validate.field).enum = {
       not_in: [0]

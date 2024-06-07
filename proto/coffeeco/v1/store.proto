@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package sideshow.coffeeco.v1;
+package coffeeco.v1;
 
 import "buf/validate/validate.proto";
 import "google/protobuf/timestamp.proto";
@@ -45,7 +45,7 @@ message Store {
   // the state of a location. We could see trends dipping and wonder, but understanding
   // if a location is open to the public, under construction, or closed forever really help
   // to understand what worked or didn't work with a specific location
-  sideshow.coffeeco.v1.Store.LocationStatus status = 5 [
+  coffeeco.v1.Store.LocationStatus status = 5 [
     (buf.validate.field).required = true,
     (buf.validate.field).enum = {
       not_in: [0]
