@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package sideshow.coffeeco.v1;
+package coffeeco.v1;
 
 import "buf/validate/validate.proto";
 import "google/protobuf/timestamp.proto";
-import "sideshow/coffeeco/v1/customer.proto";
-import "sideshow/coffeeco/v1/product.proto";
-import "sideshow/coffeeco/v1/store.proto";
+import "coffeeco/v1/customer.proto";
+import "coffeeco/v1/product.proto";
+import "coffeeco/v1/store.proto";
 
 message Order {
   // Each Order takes place at a point in Time
@@ -18,13 +18,13 @@ message Order {
   }];
   // An Order can be purchased at a CoffeeCo Location, otherwise where is the coffee going to be made
   // It is true that the Store could be online, but that makes this reference more complicated than necessary
-  sideshow.coffeeco.v1.Store purchased_at = 2 [(buf.validate.field).required = true];
+  coffeeco.v1.Store purchased_at = 2 [(buf.validate.field).required = true];
   // A Customer can Order from our Coffee Location
-  sideshow.coffeeco.v1.Customer customer = 3 [(buf.validate.field).required = true];
+  coffeeco.v1.Customer customer = 3 [(buf.validate.field).required = true];
   // Each Order may have one or more items. We cannot have an Order without something to Purchase
-  repeated sideshow.coffeeco.v1.Product items = 4 [(buf.validate.field).required = true];
+  repeated coffeeco.v1.Product items = 4 [(buf.validate.field).required = true];
   // Each Order has a monetary value
-  sideshow.coffeeco.v1.Total total = 5 [(buf.validate.field).required = true];
+  coffeeco.v1.Total total = 5 [(buf.validate.field).required = true];
 }
 
 message Total {
