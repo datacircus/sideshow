@@ -24,3 +24,5 @@ go.work.sum
 # filesystem and IDEs
 .idea/
 .DS_Store
+
+/gen
